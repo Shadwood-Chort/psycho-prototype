@@ -3,7 +3,7 @@ function App() {
 
   return (
     <>
-        <div>
+        <div className="text-large border p-10">
           Hello world!
         </div>
        
