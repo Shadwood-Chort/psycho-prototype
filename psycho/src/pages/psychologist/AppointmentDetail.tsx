@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
 import { TopBar } from "../../components/ui/TopBar";
 import { useApp } from "../../context/AppContext";
+import { useT } from "../../i18n/useT";
 import { formatDateHuman } from "../../utils/format";
 
 function initialsOf(name: string) {
@@ -20,18 +21,19 @@ export function AppointmentDetail() {
   const navigate = useNavigate();
   const { appointments, cancelAppointment } = useApp();
   const appt = appointments.find((a) => a.id === id);
+  const t = useT();
 
   if (!appt) {
     return (
       <div className="flex min-h-full flex-col">
-        <TopBar title="Запись не найдена" />
+        <TopBar title={t("Запись не найдена")} />
       </div>
     );
   }
 
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title="Запись клиента" />
+      <TopBar title={t("Запись клиента")} />
 
       <div className="flex-1 space-y-4 px-5 pb-6">
         <Card>
@@ -46,33 +48,33 @@ export function AppointmentDetail() {
           </div>
           <div className="mt-3 flex gap-2 text-[12px]">
             <span className="rounded-full bg-sage-50 px-2.5 py-1 text-sage-600">
-              {appt.format === "online" ? "Онлайн" : "Офлайн"}
+              {appt.format === "online" ? t("Онлайн") : t("Офлайн")}
             </span>
             <span className="rounded-full bg-sage-50 px-2.5 py-1 text-sage-600">
               {appt.status === "upcoming"
-                ? "Предстоит"
+                ? t("Предстоит")
                 : appt.status === "cancelled"
-                  ? "Отменена"
-                  : "Завершена"}
+                  ? t("Отменена")
+                  : t("Завершена")}
             </span>
           </div>
         </Card>
 
         <div>
-          <h2 className="mb-2 text-[14px] font-semibold text-sage-900">Анкета клиента</h2>
+          <h2 className="mb-2 text-[14px] font-semibold text-sage-900">{t("Анкета клиента")}</h2>
           <Card>
             <p className="text-[13px] leading-relaxed text-sage-700">
               {appt.clientRequestSummary ??
-                "Клиент не оставил дополнительной информации о своём запросе."}
+                t("Клиент не оставил дополнительной информации о своём запросе.")}
             </p>
           </Card>
         </div>
 
         {appt.status === "upcoming" && (
           <div className="space-y-2.5">
-            <Button onClick={() => alert("Запись подтверждена (демо)")}>Подтвердить запись</Button>
+            <Button onClick={() => alert("Запись подтверждена (демо)")}>{t("Подтвердить запись")}</Button>
             <Button variant="secondary" onClick={() => navigate(`/psychologist/chats/${appt.id}`)}>
-              Обсудить детали в чате
+              {t("Обсудить детали в чате")}
             </Button>
             <Button
               variant="coral"
@@ -81,7 +83,7 @@ export function AppointmentDetail() {
                 navigate("/psychologist/appointments");
               }}
             >
-              Отменить запись
+              {t("Отменить запись")}
             </Button>
           </div>
         )}

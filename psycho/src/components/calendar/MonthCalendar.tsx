@@ -1,4 +1,6 @@
-import { MONTHS_RU_NOM, WEEKDAYS_RU_SHORT, dateKeyFromDate } from "../../utils/format";
+import { useApp } from "../../context/AppContext";
+import { monthNames, weekdayShortNames } from "../../i18n/translations";
+import { dateKeyFromDate } from "../../utils/format";
 
 export type DayStatus = "available" | "busy" | "partial" | undefined;
 
@@ -13,10 +15,10 @@ interface MonthCalendarProps {
   minDate?: Date;
 }
 
-const STATUS_DOT: Record<Exclude<DayStatus, undefined>, string> = {
-  available: "bg-sage-500",
-  busy: "bg-coral",
-  partial: "bg-peach-dark",
+const STATUS_STYLE: Record<Exclude<DayStatus, undefined>, string> = {
+  available: "bg-sage-100 text-sage-800 font-semibold ring-1 ring-inset ring-sage-300",
+  busy: "bg-coral-light text-coral-dark font-semibold",
+  partial: "bg-peach-light text-peach-dark font-semibold",
 };
 
 export function MonthCalendar({
@@ -29,6 +31,7 @@ export function MonthCalendar({
   dayStatus,
   minDate,
 }: MonthCalendarProps) {
+  const { language } = useApp();
   const firstOfMonth = new Date(year, month, 1);
   const startOffset = (firstOfMonth.getDay() + 6) % 7; // Monday-first
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -50,7 +53,7 @@ export function MonthCalendar({
           ‹
         </button>
         <span className="text-[14px] font-semibold text-sage-900">
-          {MONTHS_RU_NOM[month]} {year}
+          {monthNames(language)[month]} {year}
         </span>
         <button
           onClick={onNextMonth}
@@ -62,12 +65,12 @@ export function MonthCalendar({
       </div>
 
       <div className="mb-1 grid grid-cols-7 text-center text-[11px] text-sage-400">
-        {WEEKDAYS_RU_SHORT.map((w) => (
+        {weekdayShortNames(language).map((w) => (
           <span key={w}>{w}</span>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-y-1 text-center">
+      <div className="grid grid-cols-7 gap-y-1.5 text-center">
         {cells.map((date, i) => {
           if (!date) return <div key={i} />;
           const key = dateKeyFromDate(date);
@@ -79,26 +82,22 @@ export function MonthCalendar({
               key={key}
               disabled={disabled}
               onClick={() => onSelectDate(key)}
-              className="flex flex-col items-center justify-center gap-0.5 py-1"
+              className="flex items-center justify-center py-0.5"
             >
               <span
                 className={[
-                  "flex h-8 w-8 items-center justify-center rounded-full text-[13px]",
+                  "flex h-9 w-9 items-center justify-center rounded-full text-[13px] transition-colors",
                   disabled
                     ? "text-sage-200"
                     : isSelected
                       ? "bg-sage-500 text-white font-semibold"
-                      : "text-sage-800",
+                      : status
+                        ? STATUS_STYLE[status]
+                        : "text-sage-300",
                 ].join(" ")}
               >
                 {date.getDate()}
               </span>
-              <span
-                className={[
-                  "h-1.5 w-1.5 rounded-full",
-                  status && !disabled ? STATUS_DOT[status] : "bg-transparent",
-                ].join(" ")}
-              />
             </button>
           );
         })}

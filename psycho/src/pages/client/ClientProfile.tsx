@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
+import { Chip } from "../../components/ui/Chip";
 import { useApp } from "../../context/AppContext";
+import { useT } from "../../i18n/useT";
+import { LANGUAGES } from "../../data/mock";
 import type { Language } from "../../types";
 
 const LANGS: { code: Language; label: string }[] = [
@@ -15,63 +18,128 @@ export function ClientProfile() {
   const { questionnaire, updateQuestionnaire, language, setLanguage, setRole } = useApp();
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
+  const t = useT();
 
   return (
     <div className="flex min-h-full flex-col">
       <div className="px-5 pt-6 pb-3">
-        <h1 className="text-xl font-semibold text-sage-900">Мой профиль</h1>
+        <h1 className="text-xl font-semibold text-sage-900">{t("Мой профиль")}</h1>
       </div>
 
       <div className="flex-1 space-y-4 px-5 pb-6">
         <Card>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-[14px] font-semibold text-sage-900">Личные данные</h2>
+            <h2 className="text-[14px] font-semibold text-sage-900">{t("Личные данные")}</h2>
             <button
               onClick={() => setEditing((v) => !v)}
               className="text-[12px] font-medium text-sage-600"
             >
-              {editing ? "Готово" : "Изменить"}
+              {editing ? t("Готово") : t("Изменить")}
             </button>
           </div>
           {editing ? (
-            <div className="space-y-3">
-              <Field label="Как к вам обращаться">
+            <div className="space-y-4">
+              <Field label={t("Как к вам обращаться?")}>
                 <input
                   value={questionnaire.addressAs}
                   onChange={(e) => updateQuestionnaire({ addressAs: e.target.value })}
                   className="w-full rounded-xl border border-sage-200 px-3 py-2 text-[13px] focus:border-sage-400 focus:outline-none"
                 />
               </Field>
-              <Field label="Язык консультации">
-                <input
+              <Field label={t("Язык консультации")}>
+                <select
                   value={questionnaire.language}
                   onChange={(e) => updateQuestionnaire({ language: e.target.value })}
-                  className="w-full rounded-xl border border-sage-200 px-3 py-2 text-[13px] focus:border-sage-400 focus:outline-none"
+                  className="w-full rounded-xl border border-sage-200 bg-white px-3 py-2 text-[13px] focus:border-sage-400 focus:outline-none"
+                >
+                  {LANGUAGES.map((l) => (
+                    <option key={l} value={l}>
+                      {t(l)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label={t("Формат")}>
+                <div className="flex gap-2">
+                  {[
+                    { v: "online", label: t("Онлайн") },
+                    { v: "offline", label: t("Офлайн") },
+                    { v: "any", label: t("Неважно") },
+                  ].map((o) => (
+                    <Chip
+                      key={o.v}
+                      active={questionnaire.format === o.v}
+                      onClick={() =>
+                        updateQuestionnaire({ format: o.v as typeof questionnaire.format })
+                      }
+                    >
+                      {o.label}
+                    </Chip>
+                  ))}
+                </div>
+              </Field>
+              <Field label={t("Предпочитаемый пол специалиста")}>
+                <div className="flex gap-2">
+                  {[
+                    { v: "any", label: t("Неважно") },
+                    { v: "female", label: t("Женщина") },
+                    { v: "male", label: t("Мужчина") },
+                  ].map((o) => (
+                    <Chip
+                      key={o.v}
+                      active={questionnaire.specialistGender === o.v}
+                      onClick={() =>
+                        updateQuestionnaire({
+                          specialistGender: o.v as typeof questionnaire.specialistGender,
+                        })
+                      }
+                    >
+                      {o.label}
+                    </Chip>
+                  ))}
+                </div>
+              </Field>
+              <Field label={t("Основной запрос")}>
+                <textarea
+                  value={questionnaire.request}
+                  onChange={(e) => updateQuestionnaire({ request: e.target.value })}
+                  rows={3}
+                  className="w-full resize-none rounded-xl border border-sage-200 px-3 py-2 text-[13px] focus:border-sage-400 focus:outline-none"
                 />
               </Field>
             </div>
           ) : (
             <div className="space-y-2 text-[13px]">
-              <Row label="Имя" value={questionnaire.addressAs || "Не указано"} />
-              <Row label="Язык консультации" value={questionnaire.language} />
+              <Row label={t("Имя")} value={questionnaire.addressAs || t("Не указано")} />
+              <Row label={t("Язык консультации")} value={t(questionnaire.language)} />
               <Row
-                label="Формат"
+                label={t("Формат")}
                 value={
                   questionnaire.format === "online"
-                    ? "Онлайн"
+                    ? t("Онлайн")
                     : questionnaire.format === "offline"
-                      ? "Офлайн"
-                      : "Неважно"
+                      ? t("Офлайн")
+                      : t("Неважно")
                 }
               />
-              <Row label="Основной запрос" value={questionnaire.request || "Не указано"} />
+              <Row
+                label={t("Пол специалиста")}
+                value={
+                  questionnaire.specialistGender === "female"
+                    ? t("Женщина")
+                    : questionnaire.specialistGender === "male"
+                      ? t("Мужчина")
+                      : t("Неважно")
+                }
+              />
+              <Row label={t("Основной запрос")} value={questionnaire.request || t("Не указано")} />
             </div>
           )}
         </Card>
 
         <Card>
-          <h2 className="mb-3 text-[14px] font-semibold text-sage-900">Настройки</h2>
-          <p className="mb-2 text-[12px] text-sage-500">Язык приложения</p>
+          <h2 className="mb-3 text-[14px] font-semibold text-sage-900">{t("Настройки")}</h2>
+          <p className="mb-2 text-[12px] text-sage-500">{t("Язык приложения")}</p>
           <div className="flex gap-2">
             {LANGS.map((l) => (
               <button
@@ -96,14 +164,14 @@ export function ClientProfile() {
             className="rounded-2xl bg-white p-4 text-left shadow-[var(--shadow-soft)]"
           >
             <p className="text-2xl">📅</p>
-            <p className="mt-1 text-[13px] font-medium text-sage-800">Мои записи</p>
+            <p className="mt-1 text-[13px] font-medium text-sage-800">{t("Мои записи")}</p>
           </button>
           <button
             onClick={() => navigate("/client/favorites")}
             className="rounded-2xl bg-white p-4 text-left shadow-[var(--shadow-soft)]"
           >
             <p className="text-2xl">🤍</p>
-            <p className="mt-1 text-[13px] font-medium text-sage-800">Избранное</p>
+            <p className="mt-1 text-[13px] font-medium text-sage-800">{t("Избранное")}</p>
           </button>
           <button
             onClick={() => navigate("/premium/client")}
@@ -117,7 +185,7 @@ export function ClientProfile() {
             className="rounded-2xl bg-white p-4 text-left shadow-[var(--shadow-soft)]"
           >
             <p className="text-2xl">ℹ️</p>
-            <p className="mt-1 text-[13px] font-medium text-sage-800">О платформе</p>
+            <p className="mt-1 text-[13px] font-medium text-sage-800">{t("О платформе")}</p>
           </button>
         </div>
 
@@ -128,7 +196,7 @@ export function ClientProfile() {
             navigate("/");
           }}
         >
-          Выйти / сменить роль
+          {t("Выйти / сменить роль")}
         </Button>
       </div>
     </div>

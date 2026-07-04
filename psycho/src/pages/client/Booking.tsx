@@ -7,6 +7,8 @@ import { Chip } from "../../components/ui/Chip";
 import { TopBar } from "../../components/ui/TopBar";
 import { useApp } from "../../context/AppContext";
 import { PSYCHOLOGISTS } from "../../data/mock";
+import { useT } from "../../i18n/useT";
+import { availableTimeOnLabel, bookingWithLabel } from "../../i18n/translations";
 import { formatDateHuman } from "../../utils/format";
 
 export function Booking() {
@@ -14,7 +16,8 @@ export function Booking() {
   const [searchParams] = useSearchParams();
   const rescheduleId = searchParams.get("reschedule");
   const navigate = useNavigate();
-  const { addAppointment, rescheduleAppointment, questionnaire } = useApp();
+  const { addAppointment, rescheduleAppointment, questionnaire, language } = useApp();
+  const t = useT();
 
   const psychologist = PSYCHOLOGISTS.find((p) => p.id === id);
 
@@ -29,7 +32,7 @@ export function Booking() {
   if (!psychologist) {
     return (
       <div className="flex min-h-full flex-col">
-        <TopBar title="Специалист не найден" />
+        <TopBar title={t("Не найдено")} />
       </div>
     );
   }
@@ -65,7 +68,7 @@ export function Booking() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title={rescheduleId ? "Перенос записи" : `Запись к ${p.name}`} />
+      <TopBar title={rescheduleId ? t("Перенос записи") : bookingWithLabel(language, p.name)} />
 
       <div className="flex-1 px-5 pb-4">
         <Card className="mb-4">
@@ -83,20 +86,25 @@ export function Booking() {
           />
         </Card>
 
+        <div className="mb-4 flex items-center justify-center gap-1.5 text-[11px] text-sage-500">
+          <span className="h-3 w-3 rounded-full bg-sage-100 ring-1 ring-inset ring-sage-300" />
+          <span>{t("Есть свободное время")}</span>
+        </div>
+
         {selectedDate && (
           <div className="mb-4">
             <h2 className="mb-2 text-[13px] font-medium text-sage-700">
-              Свободное время на {formatDateHuman(selectedDate)}
+              {availableTimeOnLabel(language, formatDateHuman(selectedDate))}
             </h2>
             {slotsForDate.length === 0 ? (
               <p className="text-[13px] text-sage-500">
-                На эту дату нет свободных слотов. Выберите другой день.
+                {t("На эту дату нет свободных слотов. Выберите другой день.")}
               </p>
             ) : (
               <div className="flex flex-wrap gap-2">
-                {slotsForDate.map((t) => (
-                  <Chip key={t} active={selectedTime === t} onClick={() => setSelectedTime(t)}>
-                    {t}
+                {slotsForDate.map((time) => (
+                  <Chip key={time} active={selectedTime === time} onClick={() => setSelectedTime(time)}>
+                    {time}
                   </Chip>
                 ))}
               </div>
@@ -108,12 +116,12 @@ export function Booking() {
           onClick={() => setShowSuggest((v) => !v)}
           className="mb-2 w-full rounded-xl border border-dashed border-sage-300 bg-white py-3 text-[13px] font-medium text-sage-600"
         >
-          Предложите мне время
+          {t("Предложите мне время")}
         </button>
         {showSuggest && (
           <Card className="mb-4 space-y-2">
             <p className="text-[12px] text-sage-500">
-              Опишите, когда вам удобно — специалист свяжется с вами для согласования.
+              {t("Опишите, когда вам удобно — специалист свяжется с вами для согласования.")}
             </p>
             <textarea
               value={suggestText}
@@ -128,19 +136,19 @@ export function Booking() {
               onClick={() => setShowSuggest(false)}
               disabled={!suggestText.trim()}
             >
-              Отправить предложение
+              {t("Отправить предложение")}
             </Button>
           </Card>
         )}
 
         <p className="text-center text-[12px] text-sage-400">
-          Время указано по часовому поясу Ташкент, GMT+5
+          {t("Время указано по часовому поясу Ташкент, GMT+5")}
         </p>
       </div>
 
       <div className="px-5 pb-6 pt-2">
         <Button disabled={!selectedDate || !selectedTime} onClick={handleConfirm}>
-          Подтвердить запись
+          {t("Подтвердить запись")}
         </Button>
       </div>
     </div>

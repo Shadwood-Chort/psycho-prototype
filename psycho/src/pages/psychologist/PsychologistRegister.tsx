@@ -4,7 +4,9 @@ import { Button } from "../../components/ui/Button";
 import { Chip } from "../../components/ui/Chip";
 import { StepHeader } from "../../components/ui/StepHeader";
 import { useApp } from "../../context/AppContext";
+import { useT } from "../../i18n/useT";
 import { APPROACHES, LANGUAGES, TOPICS } from "../../data/mock";
+import type { PsychologistRegistration } from "../../types";
 
 const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const TIME_OPTIONS = ["09:00", "11:00", "13:00", "15:00", "17:00", "19:00"];
@@ -14,6 +16,7 @@ export function PsychologistRegister() {
   const { psychReg, updatePsychReg } = useApp();
   const navigate = useNavigate();
   const [fileNames, setFileNames] = useState<string[]>([]);
+  const t = useT();
 
   const back = () => {
     if (step === 1) navigate("/");
@@ -44,11 +47,11 @@ export function PsychologistRegister() {
   };
 
   const titles = [
-    "Личная информация",
-    "Квалификация",
-    "Документы и верификация",
-    "Настройка расписания",
-    "Готово!",
+    t("Личная информация"),
+    t("Квалификация"),
+    t("Документы и верификация"),
+    t("Настройка расписания"),
+    t("Готово!"),
   ];
 
   return (
@@ -59,7 +62,7 @@ export function PsychologistRegister() {
         {step === 1 && (
           <div className="space-y-3">
             <TextField
-              label="Полное имя"
+              label={t("Полное имя")}
               value={psychReg.fullName}
               onChange={(v) => updatePsychReg({ fullName: v })}
               placeholder="Иванова Мария Сергеевна"
@@ -71,7 +74,7 @@ export function PsychologistRegister() {
               placeholder="mail@example.com"
             />
             <TextField
-              label="Телефон"
+              label={t("Телефон")}
               value={psychReg.phone}
               onChange={(v) => updatePsychReg({ phone: v })}
               placeholder="+998 90 123 45 67"
@@ -83,29 +86,29 @@ export function PsychologistRegister() {
           <div className="space-y-4">
             <div>
               <label className="mb-2 block text-[13px] font-medium text-sage-700">
-                Специализация (темы)
+                {t("Специализация (темы)")}
               </label>
               <div className="flex flex-wrap gap-2">
-                {TOPICS.map((t) => (
+                {TOPICS.map((topic) => (
                   <Chip
-                    key={t}
-                    active={psychReg.specializations.includes(t)}
+                    key={topic}
+                    active={psychReg.specializations.includes(topic)}
                     onClick={() =>
                       updatePsychReg({
-                        specializations: psychReg.specializations.includes(t)
-                          ? psychReg.specializations.filter((x) => x !== t)
-                          : [...psychReg.specializations, t],
+                        specializations: psychReg.specializations.includes(topic)
+                          ? psychReg.specializations.filter((x) => x !== topic)
+                          : [...psychReg.specializations, topic],
                       })
                     }
                   >
-                    {t}
+                    {t(topic)}
                   </Chip>
                 ))}
               </div>
             </div>
 
             <TextField
-              label="Опыт работы (лет)"
+              label={t("Опыт работы (лет)")}
               value={psychReg.experienceYears}
               onChange={(v) => updatePsychReg({ experienceYears: v })}
               placeholder="5"
@@ -113,7 +116,7 @@ export function PsychologistRegister() {
 
             <div>
               <label className="mb-2 block text-[13px] font-medium text-sage-700">
-                Подходы и методы
+                {t("Подходы и методы")}
               </label>
               <div className="flex flex-wrap gap-2">
                 {APPROACHES.map((a) => (
@@ -128,7 +131,7 @@ export function PsychologistRegister() {
                       })
                     }
                   >
-                    {a}
+                    {t(a)}
                   </Chip>
                 ))}
               </div>
@@ -136,7 +139,7 @@ export function PsychologistRegister() {
 
             <div>
               <label className="mb-2 block text-[13px] font-medium text-sage-700">
-                Язык консультаций
+                {t("Язык консультаций")}
               </label>
               <select
                 value={psychReg.language}
@@ -145,7 +148,7 @@ export function PsychologistRegister() {
               >
                 {LANGUAGES.map((l) => (
                   <option key={l} value={l}>
-                    {l}
+                    {t(l)}
                   </option>
                 ))}
               </select>
@@ -153,18 +156,22 @@ export function PsychologistRegister() {
 
             <div>
               <label className="mb-2 block text-[13px] font-medium text-sage-700">
-                Предпочитаемый пол клиента
+                {t("Предпочитаемый пол клиента")}
               </label>
               <div className="flex gap-2">
                 {[
-                  { v: "any", label: "Неважно" },
-                  { v: "female", label: "Женщины" },
-                  { v: "male", label: "Мужчины" },
+                  { v: "any", label: t("Неважно") },
+                  { v: "female", label: t("Женщины") },
+                  { v: "male", label: t("Мужчины") },
                 ].map((o) => (
                   <Chip
                     key={o.v}
                     active={psychReg.clientGenderPreference === o.v}
-                    onClick={() => updatePsychReg({ clientGenderPreference: o.v as any })}
+                    onClick={() =>
+                      updatePsychReg({
+                        clientGenderPreference: o.v as PsychologistRegistration["clientGenderPreference"],
+                      })
+                    }
                   >
                     {o.label}
                   </Chip>
@@ -173,7 +180,7 @@ export function PsychologistRegister() {
             </div>
 
             <TextField
-              label="Цена за сессию (сум)"
+              label={t("Цена за сессию (сум)")}
               value={psychReg.price}
               onChange={(v) => updatePsychReg({ price: v })}
               placeholder="180000"
@@ -184,12 +191,12 @@ export function PsychologistRegister() {
         {step === 3 && (
           <div className="space-y-4">
             <p className="text-[13px] text-sage-600">
-              Загрузите диплом и сертификаты, подтверждающие квалификацию.
+              {t("Загрузите диплом и сертификаты, подтверждающие квалификацию.")}
             </p>
             <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-sage-300 bg-white py-8 text-center">
               <span className="text-2xl">📄</span>
               <span className="text-[13px] font-medium text-sage-700">
-                Нажмите, чтобы загрузить файл
+                {t("Нажмите, чтобы загрузить файл")}
               </span>
               <input
                 type="file"
@@ -216,7 +223,7 @@ export function PsychologistRegister() {
               </div>
             )}
             <p className="rounded-xl bg-sage-50 px-3 py-2.5 text-[12px] text-sage-600">
-              Документы проходят модерацию. Обычно это занимает 1–2 рабочих дня.
+              {t("Документы проходят модерацию. Обычно это занимает 1–2 рабочих дня.")}
             </p>
           </div>
         )}
@@ -224,7 +231,7 @@ export function PsychologistRegister() {
         {step === 4 && (
           <div className="space-y-4">
             <p className="text-[13px] text-sage-600">
-              Отметьте дни недели и удобное время для консультаций.
+              {t("Отметьте дни недели и удобное время для консультаций.")}
             </p>
             <div className="space-y-3">
               {WEEKDAYS.map((day) => {
@@ -247,13 +254,13 @@ export function PsychologistRegister() {
                     </button>
                     {active && (
                       <div className="mt-2 flex flex-wrap gap-1.5">
-                        {TIME_OPTIONS.map((t) => (
+                        {TIME_OPTIONS.map((time) => (
                           <Chip
-                            key={t}
-                            active={psychReg.weeklySlots[day]?.includes(t)}
-                            onClick={() => toggleTime(day, t)}
+                            key={time}
+                            active={psychReg.weeklySlots[day]?.includes(time)}
+                            onClick={() => toggleTime(day, time)}
                           >
-                            {t}
+                            {time}
                           </Chip>
                         ))}
                       </div>
@@ -264,13 +271,13 @@ export function PsychologistRegister() {
             </div>
 
             <TextField
-              label="Ссылка для онлайн-консультаций (Zoom)"
+              label={t("Ссылка для онлайн-консультаций (Zoom)")}
               value={psychReg.onlineLink}
               onChange={(v) => updatePsychReg({ onlineLink: v })}
               placeholder="https://zoom.us/j/..."
             />
             <TextField
-              label="Адрес для очных консультаций (необязательно)"
+              label={t("Адрес для очных консультаций (необязательно)")}
               value={psychReg.officeAddress}
               onChange={(v) => updatePsychReg({ officeAddress: v })}
               placeholder="г. Ташкент, ул. ..."
@@ -283,17 +290,18 @@ export function PsychologistRegister() {
             <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-sage-500 text-4xl text-white shadow-[var(--shadow-soft-lg)]">
               🎉
             </div>
-            <h2 className="text-lg font-semibold text-sage-900">Анкета отправлена!</h2>
+            <h2 className="text-lg font-semibold text-sage-900">{t("Анкета отправлена!")}</h2>
             <p className="mt-2 text-[13px] text-sage-600">
-              Мы проверим ваши документы и активируем профиль в течение 1–2 рабочих дней. А пока
-              вы можете заполнить кабинет и настроить расписание.
+              {t(
+                "Мы проверим ваши документы и активируем профиль в течение 1–2 рабочих дней. А пока вы можете заполнить кабинет и настроить расписание.",
+              )}
             </p>
           </div>
         )}
       </div>
 
       <div className="px-5 pb-6 pt-2">
-        <Button onClick={next}>{step < 5 ? "Далее" : "Перейти в кабинет"}</Button>
+        <Button onClick={next}>{step < 5 ? t("Далее") : t("Перейти в кабинет")}</Button>
       </div>
     </div>
   );

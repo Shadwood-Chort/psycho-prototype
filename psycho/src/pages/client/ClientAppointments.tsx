@@ -3,17 +3,19 @@ import { Avatar } from "../../components/ui/Avatar";
 import { Card } from "../../components/ui/Card";
 import { useApp, MY_PSYCHOLOGIST_ID } from "../../context/AppContext";
 import { PSYCHOLOGISTS } from "../../data/mock";
+import { useT } from "../../i18n/useT";
 import { formatDateHuman } from "../../utils/format";
-
-const STATUS_LABEL: Record<string, string> = {
-  upcoming: "Предстоит",
-  completed: "Завершена",
-  cancelled: "Отменена",
-};
 
 export function ClientAppointments() {
   const { appointments, cancelAppointment } = useApp();
   const navigate = useNavigate();
+  const t = useT();
+
+  const STATUS_LABEL: Record<string, string> = {
+    upcoming: t("Предстоит"),
+    completed: t("Завершена"),
+    cancelled: t("Отменена"),
+  };
 
   const myAppointments = appointments
     .filter((a) => a.psychologistId !== MY_PSYCHOLOGIST_ID)
@@ -22,13 +24,13 @@ export function ClientAppointments() {
   return (
     <div className="flex min-h-full flex-col">
       <div className="px-5 pt-6 pb-3">
-        <h1 className="text-xl font-semibold text-sage-900">Мои записи</h1>
+        <h1 className="text-xl font-semibold text-sage-900">{t("Мои записи")}</h1>
       </div>
 
       <div className="flex-1 space-y-3 px-5 pb-6">
         {myAppointments.length === 0 && (
           <p className="pt-10 text-center text-[14px] text-sage-500">
-            У вас пока нет записей. Найдите специалиста и запишитесь на консультацию.
+            {t("У вас пока нет записей. Найдите специалиста и запишитесь на консультацию.")}
           </p>
         )}
         {myAppointments.map((a) => {
@@ -60,12 +62,12 @@ export function ClientAppointments() {
 
               {a.status === "upcoming" && (
                 <div className="mt-3 grid grid-cols-3 gap-2">
-                  <ActionButton label="Просмотр" onClick={() => navigate(`/client/specialists/${p.id}`)} />
+                  <ActionButton label={t("Просмотр")} onClick={() => navigate(`/client/specialists/${p.id}`)} />
                   <ActionButton
-                    label="Перенести"
+                    label={t("Перенести")}
                     onClick={() => navigate(`/client/specialists/${p.id}/booking?reschedule=${a.id}`)}
                   />
-                  <ActionButton label="Отменить" onClick={() => cancelAppointment(a.id)} danger />
+                  <ActionButton label={t("Отменить")} onClick={() => cancelAppointment(a.id)} danger />
                 </div>
               )}
             </Card>

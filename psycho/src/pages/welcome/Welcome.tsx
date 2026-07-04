@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { useApp } from "../../context/AppContext";
+import { useT } from "../../i18n/useT";
 import type { Language, Role } from "../../types";
 
 const LANGS: { code: Language; label: string }[] = [
@@ -14,6 +15,7 @@ export function Welcome() {
   const { language, setLanguage, setRole, termsAccepted, setTermsAccepted } = useApp();
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const navigate = useNavigate();
+  const t = useT();
 
   const handleContinue = () => {
     if (!selectedRole || !termsAccepted) return;
@@ -27,9 +29,9 @@ export function Welcome() {
         <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-sage-500 text-4xl text-white shadow-[var(--shadow-soft-lg)]">
           🌿
         </div>
-        <h1 className="text-2xl font-semibold text-sage-900">Добро пожаловать!</h1>
+        <h1 className="text-2xl font-semibold text-sage-900">{t("Добро пожаловать!")}</h1>
         <p className="mt-2 text-[15px] text-sage-600">
-          Платформа для поиска психолога и записи на консультацию
+          {t("Платформа для поиска психолога и записи на консультацию")}
         </p>
 
         <div className="mt-8 flex w-full gap-2">
@@ -52,13 +54,13 @@ export function Welcome() {
         <div className="mt-10 w-full space-y-3 text-left">
           <RoleOption
             emoji="🧑"
-            label="Я клиент — ищу психолога"
+            label={t("Я клиент — ищу психолога")}
             active={selectedRole === "client"}
             onClick={() => setSelectedRole("client")}
           />
           <RoleOption
             emoji="🩺"
-            label="Я психолог — предлагаю консультации"
+            label={t("Я психолог — предлагаю консультации")}
             active={selectedRole === "psychologist"}
             onClick={() => setSelectedRole("psychologist")}
           />
@@ -74,11 +76,11 @@ export function Welcome() {
             className="mt-0.5 h-4 w-4 accent-sage-500"
           />
           <span>
-            Я принимаю условия пользовательского соглашения и политику конфиденциальности
+            {t("Я принимаю условия пользовательского соглашения и политику конфиденциальности")}
           </span>
         </label>
         <Button disabled={!selectedRole || !termsAccepted} onClick={handleContinue}>
-          Продолжить
+          {t("Продолжить")}
         </Button>
       </div>
     </div>

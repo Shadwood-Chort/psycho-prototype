@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Chip } from "../../components/ui/Chip";
 import { useApp } from "../../context/AppContext";
-import { APPROACHES, LANGUAGES, PSYCHOLOGISTS, TOPICS } from "../../data/mock";
+import { APPROACHES, PSYCHOLOGISTS, TOPICS } from "../../data/mock";
+import { useT } from "../../i18n/useT";
+import { priceUpToLabel, showSpecialistsLabel } from "../../i18n/translations";
 import { formatPrice } from "../../utils/format";
 
 export function Search() {
-  const { searchFilters, updateSearchFilters } = useApp();
+  const { searchFilters, updateSearchFilters, language } = useApp();
   const navigate = useNavigate();
+  const t = useT();
 
   const count = useMemo(() => {
     return PSYCHOLOGISTS.filter((p) => {
@@ -40,41 +43,42 @@ export function Search() {
   return (
     <div className="flex min-h-full flex-col">
       <div className="px-5 pt-6 pb-2">
-        <h1 className="text-xl font-semibold text-sage-900">Найдите своего специалиста</h1>
-        <p className="mt-1 text-[13px] text-sage-600">Настройте фильтры под свой запрос</p>
+        <h1 className="text-xl font-semibold text-sage-900">{t("Найдите своего специалиста")}</h1>
+        <p className="mt-1 text-[13px] text-sage-600">{t("Настройте фильтры под свой запрос")}</p>
       </div>
 
       <div className="flex-1 space-y-6 px-5 pb-4 pt-2">
         <input
           value={searchFilters.query}
           onChange={(e) => updateSearchFilters({ query: e.target.value })}
-          placeholder="Поиск по имени специалиста"
+          placeholder={t("Поиск по имени специалиста")}
           className="w-full rounded-xl border border-sage-200 bg-white px-4 py-3 text-[14px] text-sage-800 placeholder:text-sage-400 focus:border-sage-400 focus:outline-none"
         />
 
-        <div className="flex flex-wrap gap-2">
-          <Chip active={searchFilters.online} onClick={() => updateSearchFilters({ online: !searchFilters.online })}>
-            Онлайн
+        <FilterSection title={t("Формат")}>
+          <Chip
+            active={searchFilters.online}
+            onClick={() => updateSearchFilters({ online: !searchFilters.online })}
+          >
+            {t("Только онлайн")}
           </Chip>
-          <Chip active={false}>Язык: {LANGUAGES[0]}</Chip>
-          <Chip active={searchFilters.approaches.length > 0}>Подход</Chip>
-        </div>
+        </FilterSection>
 
-        <FilterSection title="Популярные запросы">
+        <FilterSection title={t("Популярные запросы")}>
           <div className="flex flex-wrap gap-2">
-            {TOPICS.map((t) => (
+            {TOPICS.map((topic) => (
               <Chip
-                key={t}
-                active={searchFilters.topics.includes(t)}
-                onClick={() => updateSearchFilters({ topics: toggle(searchFilters.topics, t) })}
+                key={topic}
+                active={searchFilters.topics.includes(topic)}
+                onClick={() => updateSearchFilters({ topics: toggle(searchFilters.topics, topic) })}
               >
-                {t}
+                {t(topic)}
               </Chip>
             ))}
           </div>
         </FilterSection>
 
-        <FilterSection title="Подходы">
+        <FilterSection title={t("Подходы")}>
           <div className="flex flex-wrap gap-2">
             {APPROACHES.map((a) => (
               <Chip
@@ -84,13 +88,13 @@ export function Search() {
                   updateSearchFilters({ approaches: toggle(searchFilters.approaches, a) })
                 }
               >
-                {a}
+                {t(a)}
               </Chip>
             ))}
           </div>
         </FilterSection>
 
-        <FilterSection title={`Цена за сессию: до ${formatPrice(searchFilters.priceMax)}`}>
+        <FilterSection title={priceUpToLabel(language, formatPrice(searchFilters.priceMax))}>
           <input
             type="range"
             min={0}
@@ -106,17 +110,17 @@ export function Search() {
           </div>
         </FilterSection>
 
-        <FilterSection title="Пол специалиста">
+        <FilterSection title={t("Пол специалиста")}>
           <div className="flex gap-2">
             {[
-              { v: "any", label: "Неважно" },
-              { v: "female", label: "Женщина" },
-              { v: "male", label: "Мужчина" },
+              { v: "any", label: t("Неважно") },
+              { v: "female", label: t("Женщина") },
+              { v: "male", label: t("Мужчина") },
             ].map((o) => (
               <Chip
                 key={o.v}
                 active={searchFilters.gender === o.v}
-                onClick={() => updateSearchFilters({ gender: o.v as any })}
+                onClick={() => updateSearchFilters({ gender: o.v as typeof searchFilters.gender })}
               >
                 {o.label}
               </Chip>
@@ -127,7 +131,7 @@ export function Search() {
 
       <div className="px-5 pb-6 pt-2">
         <Button onClick={() => navigate("/client/specialists")}>
-          Показать {count} специалистов
+          {showSpecialistsLabel(language, count)}
         </Button>
       </div>
     </div>

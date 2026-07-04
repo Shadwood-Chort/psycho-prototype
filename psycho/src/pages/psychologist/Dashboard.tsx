@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { Avatar } from "../../components/ui/Avatar";
 import { useApp, MY_PSYCHOLOGIST_ID } from "../../context/AppContext";
+import { useT } from "../../i18n/useT";
 
 export function Dashboard() {
   const { psychReg, psychProfileCompletion, appointments } = useApp();
   const navigate = useNavigate();
+  const t = useT();
 
   const upcomingCount = appointments.filter(
     (a) => a.psychologistId === MY_PSYCHOLOGIST_ID && a.status === "upcoming",
@@ -20,13 +22,13 @@ export function Dashboard() {
       .toUpperCase() || "Я";
 
   const menu = [
-    { icon: "👤", label: "Мой профиль", to: "/psychologist/profile" },
-    { icon: "📆", label: "Календарь и расписание", to: "/psychologist/calendar" },
-    { icon: "📋", label: "Мои записи", to: "/psychologist/appointments", badge: upcomingCount },
-    { icon: "🧑‍🤝‍🧑", label: "Клиенты", to: "/psychologist/clients" },
-    { icon: "⭐", label: "Отзывы", to: "/psychologist/reviews" },
-    { icon: "📚", label: "Мои материалы", to: "/psychologist/content", pro: true },
-    { icon: "📊", label: "Статистика", to: "/psychologist/statistics", pro: true },
+    { icon: "👤", label: t("Мой профиль"), to: "/psychologist/profile" },
+    { icon: "📆", label: t("Календарь и расписание"), to: "/psychologist/calendar" },
+    { icon: "📋", label: t("Мои записи"), to: "/psychologist/appointments", badge: upcomingCount },
+    { icon: "🧑‍🤝‍🧑", label: t("Клиенты"), to: "/psychologist/clients" },
+    { icon: "⭐", label: t("Отзывы"), to: "/psychologist/reviews" },
+    { icon: "📚", label: t("Мои материалы"), to: "/psychologist/content", pro: true },
+    { icon: "📊", label: t("Статистика"), to: "/psychologist/statistics", pro: true },
   ];
 
   return (
@@ -36,16 +38,16 @@ export function Dashboard() {
           <Avatar initials={initials} color="#728C72" size={56} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-[16px] font-semibold">
-              {psychReg.fullName || "Ваше имя"}
+              {psychReg.fullName || t("Ваше имя")}
             </p>
             <p className="text-[12px] text-sage-100">
-              {psychReg.approaches.join(", ") || "Укажите подходы в профиле"}
+              {psychReg.approaches.map(t).join(", ") || t("Укажите подходы в профиле")}
             </p>
           </div>
         </div>
         <div className="mt-4">
           <div className="mb-1 flex justify-between text-[11px] text-sage-100">
-            <span>Профиль заполнен</span>
+            <span>{t("Профиль заполнен")}</span>
             <span>{psychProfileCompletion}%</span>
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-white/25">

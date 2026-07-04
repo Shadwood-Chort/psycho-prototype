@@ -2,23 +2,25 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar } from "../../components/ui/Avatar";
 import { useApp, MY_PSYCHOLOGIST_ID } from "../../context/AppContext";
 import { PSYCHOLOGISTS } from "../../data/mock";
+import { useT } from "../../i18n/useT";
 
 export function ChatList() {
   const location = useLocation();
   const isPsychologist = location.pathname.startsWith("/psychologist");
   const navigate = useNavigate();
   const { appointments, favorites, chats } = useApp();
+  const t = useT();
 
   if (isPsychologist) {
     const myAppointments = appointments.filter((a) => a.psychologistId === MY_PSYCHOLOGIST_ID);
     return (
       <div className="flex min-h-full flex-col">
         <div className="px-5 pt-6 pb-3">
-          <h1 className="text-xl font-semibold text-sage-900">Чаты с клиентами</h1>
+          <h1 className="text-xl font-semibold text-sage-900">{t("Чаты с клиентами")}</h1>
         </div>
         <div className="flex-1 px-5 pb-6">
           {myAppointments.length === 0 ? (
-            <EmptyState text="Пока нет активных чатов с клиентами." />
+            <EmptyState text={t("Пока нет активных чатов с клиентами.")} />
           ) : (
             <div className="space-y-2">
               {myAppointments.map((a) => {
@@ -36,7 +38,7 @@ export function ChatList() {
                         {a.clientName}
                       </p>
                       <p className="truncate text-[12px] text-sage-500">
-                        {last ? last.text : "Нажмите, чтобы начать диалог"}
+                        {last ? last.text : t("Нажмите, чтобы начать диалог")}
                       </p>
                     </div>
                   </button>
@@ -62,11 +64,11 @@ export function ChatList() {
   return (
     <div className="flex min-h-full flex-col">
       <div className="px-5 pt-6 pb-3">
-        <h1 className="text-xl font-semibold text-sage-900">Чаты</h1>
+        <h1 className="text-xl font-semibold text-sage-900">{t("Чаты")}</h1>
       </div>
       <div className="flex-1 px-5 pb-6">
         {relatedPsychologists.length === 0 ? (
-          <EmptyState text="У вас пока нет чатов. Запишитесь на консультацию, чтобы начать общение." />
+          <EmptyState text={t("У вас пока нет чатов. Запишитесь на консультацию, чтобы начать общение.")} />
         ) : (
           <div className="space-y-2">
             {relatedPsychologists.map((p) => {
@@ -82,7 +84,7 @@ export function ChatList() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[14px] font-medium text-sage-900">{p.name}</p>
                     <p className="truncate text-[12px] text-sage-500">
-                      {last ? last.text : "Нажмите, чтобы начать диалог"}
+                      {last ? last.text : t("Нажмите, чтобы начать диалог")}
                     </p>
                   </div>
                 </button>

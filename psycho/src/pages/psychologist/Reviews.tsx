@@ -1,6 +1,7 @@
 import { Card } from "../../components/ui/Card";
 import { RatingStars } from "../../components/ui/RatingStars";
 import { TopBar } from "../../components/ui/TopBar";
+import { useT } from "../../i18n/useT";
 
 const MOCK_REVIEWS = [
   { author: "Дильноза К.", rating: 5, text: "Очень внимательный специалист, спасибо за поддержку." },
@@ -8,9 +9,10 @@ const MOCK_REVIEWS = [
 ];
 
 export function Reviews() {
+  const t = useT();
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title="Отзывы" />
+      <TopBar title={t("Отзывы")} />
       <div className="flex-1 space-y-3 px-5 pb-6">
         {MOCK_REVIEWS.map((r, i) => (
           <Card key={i}>

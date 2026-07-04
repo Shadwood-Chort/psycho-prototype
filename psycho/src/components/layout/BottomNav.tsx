@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useT } from "../../i18n/useT";
 import type { Role } from "../../types";
 
 interface NavItem {
@@ -8,46 +9,51 @@ interface NavItem {
   badge?: number;
 }
 
-function clientItems(): NavItem[] {
-  return [
-    { to: "/client/search", label: "Главная", icon: "🏠" },
-    { to: "/client/favorites", label: "Избранное", icon: "♡" },
-    { to: "/client/appointments", label: "Записи", icon: "📅" },
-    { to: "/client/chats", label: "Чат", icon: "💬" },
-    { to: "/client/profile", label: "Профиль", icon: "👤" },
-  ];
-}
-
-function psychItems(appointmentsBadge: number): NavItem[] {
-  return [
-    { to: "/psychologist/dashboard", label: "Кабинет", icon: "🏠" },
-    { to: "/psychologist/calendar", label: "Календарь", icon: "📆" },
-    { to: "/psychologist/appointments", label: "Записи", icon: "📋", badge: appointmentsBadge },
-    { to: "/psychologist/chats", label: "Чат", icon: "💬" },
-    { to: "/psychologist/profile", label: "Профиль", icon: "👤" },
-  ];
-}
-
 export function BottomNav({ role, appointmentsBadge = 0 }: { role: Role; appointmentsBadge?: number }) {
-  const items = role === "client" ? clientItems() : psychItems(appointmentsBadge);
+  const t = useT();
+
+  const clientItems: NavItem[] = [
+    { to: "/client/search", label: t("Главная"), icon: "🏠" },
+    { to: "/client/favorites", label: t("Избранное"), icon: "♡" },
+    { to: "/client/appointments", label: t("Записи"), icon: "📅" },
+    { to: "/client/chats", label: t("Чат"), icon: "💬" },
+    { to: "/client/profile", label: t("Профиль"), icon: "👤" },
+  ];
+
+  const psychItems: NavItem[] = [
+    { to: "/psychologist/dashboard", label: t("Кабинет"), icon: "🏠" },
+    { to: "/psychologist/calendar", label: t("Календарь"), icon: "📆" },
+    { to: "/psychologist/appointments", label: t("Записи"), icon: "📋", badge: appointmentsBadge },
+    { to: "/psychologist/chats", label: t("Чат"), icon: "💬" },
+    { to: "/psychologist/profile", label: t("Профиль"), icon: "👤" },
+  ];
+
+  if (role === "client") {
+    return (
+      <nav className="shrink-0 border-t border-sage-100 bg-white px-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5">
+        <div className="flex items-center justify-between">
+          {clientItems.slice(0, 3).map((item) => (
+            <NavTab key={item.to} item={item} />
+          ))}
+
+          <NavLink to="/sos" className="flex flex-col items-center justify-center gap-0.5 px-2 -mt-4">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-coral text-white text-[11px] font-bold shadow-[var(--shadow-soft-lg)]">
+              SOS
+            </span>
+          </NavLink>
+
+          {clientItems.slice(3).map((item) => (
+            <NavTab key={item.to} item={item} />
+          ))}
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="shrink-0 border-t border-sage-100 bg-white px-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5">
       <div className="flex items-center justify-between">
-        {items.slice(0, 3).map((item) => (
-          <NavTab key={item.to} item={item} />
-        ))}
-
-        <NavLink
-          to="/sos"
-          className="flex flex-col items-center justify-center gap-0.5 px-2 -mt-4"
-        >
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-coral text-white text-[11px] font-bold shadow-[var(--shadow-soft-lg)]">
-            SOS
-          </span>
-        </NavLink>
-
-        {items.slice(3).map((item) => (
+        {psychItems.map((item) => (
           <NavTab key={item.to} item={item} />
         ))}
       </div>

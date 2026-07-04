@@ -1,3 +1,6 @@
+import { useApp } from "../../context/AppContext";
+import { stepOfLabel } from "../../i18n/translations";
+
 interface StepHeaderProps {
   step: number;
   total: number;
@@ -6,6 +9,7 @@ interface StepHeaderProps {
 }
 
 export function StepHeader({ step, total, title, onBack }: StepHeaderProps) {
+  const { language } = useApp();
   return (
     <div className="px-5 pt-6 pb-2">
       <div className="flex items-center gap-3 mb-3">
@@ -20,7 +24,7 @@ export function StepHeader({ step, total, title, onBack }: StepHeaderProps) {
           </button>
         )}
         <span className="text-[13px] font-medium text-sage-500">
-          Шаг {step} из {total}
+          {stepOfLabel(language, step, total)}
         </span>
       </div>
       <div className="flex gap-1.5 mb-4">

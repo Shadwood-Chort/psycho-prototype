@@ -4,15 +4,18 @@ import { Avatar } from "../../components/ui/Avatar";
 import { TopBar } from "../../components/ui/TopBar";
 import { useApp } from "../../context/AppContext";
 import { PSYCHOLOGISTS } from "../../data/mock";
+import { useT } from "../../i18n/useT";
+import { sessionInfoLabel } from "../../i18n/translations";
 import { formatDateHuman } from "../../utils/format";
 
 export function ChatThread() {
   const { id } = useParams();
   const location = useLocation();
   const isPsychologist = location.pathname.startsWith("/psychologist");
-  const { chats, addChatMessage, appointments } = useApp();
+  const { chats, addChatMessage, appointments, language } = useApp();
   const [text, setText] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   let title = "";
   let subtitle = "";
@@ -23,7 +26,7 @@ export function ChatThread() {
 
   if (isPsychologist) {
     const appt = appointments.find((a) => a.id === id);
-    title = appt?.clientName ?? "Клиент";
+    title = appt?.clientName ?? t("Клиент");
     avatarInitials = title
       .split(" ")
       .map((p) => p[0])
@@ -31,23 +34,27 @@ export function ChatThread() {
       .slice(0, 2)
       .toUpperCase();
     if (appt) {
-      sessionInfo = `Сессия: ${formatDateHuman(appt.date)} в ${appt.time} · ${
-        appt.format === "online" ? "Zoom (ссылка появится за час до сессии)" : "Офлайн"
-      }`;
+      sessionInfo = sessionInfoLabel(
+        language,
+        `${formatDateHuman(appt.date)} в ${appt.time}`,
+        appt.format === "online" ? t("Zoom (ссылка появится за час до сессии)") : t("Офлайн"),
+      );
     }
   } else {
     const p = PSYCHOLOGISTS.find((p) => p.id === id);
-    title = p?.name ?? "Специалист";
+    title = p?.name ?? t("Специалист");
     avatarInitials = p?.initials ?? "??";
     avatarColor = p?.avatarColor ?? avatarColor;
-    subtitle = p?.approaches.join(", ") ?? "";
+    subtitle = p?.approaches.map(t).join(", ") ?? "";
     const appt = appointments.find(
       (a) => a.psychologistId === id && a.status === "upcoming",
     );
     if (appt) {
-      sessionInfo = `Сессия: ${formatDateHuman(appt.date)} в ${appt.time} · ${
-        p?.contacts.zoom ? "Zoom-ссылка активна за 1 час до начала" : "Формат уточняется"
-      }`;
+      sessionInfo = sessionInfoLabel(
+        language,
+        `${formatDateHuman(appt.date)} в ${appt.time}`,
+        p?.contacts.zoom ? t("Zoom-ссылка активна за 1 час до начала") : t("Формат уточняется"),
+      );
     }
   }
 
@@ -82,7 +89,7 @@ export function ChatThread() {
       <div className="flex-1 space-y-3 overflow-y-auto px-5 pb-3">
         {messages.length === 0 && (
           <p className="pt-10 text-center text-[13px] text-sage-400">
-            Здесь пока нет сообщений. Начните диалог!
+            {t("Здесь пока нет сообщений. Начните диалог!")}
           </p>
         )}
         {messages.map((m) => {
@@ -121,13 +128,13 @@ export function ChatThread() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
-          placeholder="Написать сообщение..."
+          placeholder={t("Написать сообщение...")}
           className="flex-1 rounded-full border border-sage-200 bg-white px-4 py-2.5 text-[13px] focus:border-sage-400 focus:outline-none"
         />
         <button
           onClick={send}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage-500 text-white"
-          aria-label="Отправить"
+          aria-label={t("Отправить")}
         >
           ➤
         </button>

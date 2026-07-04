@@ -1,5 +1,6 @@
 import { Card } from "../../components/ui/Card";
 import { TopBar } from "../../components/ui/TopBar";
+import { useT } from "../../i18n/useT";
 
 const POINTS = [
   "Платформа не заменяет врачебную помощь и не оказывает экстренную психиатрическую помощь.",
@@ -9,14 +10,15 @@ const POINTS = [
 ];
 
 export function About() {
+  const t = useT();
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title="Важно знать" />
+      <TopBar title={t("Важно знать")} />
       <div className="flex-1 space-y-3 px-5 pb-6">
         {POINTS.map((p, i) => (
           <Card key={i} className="flex gap-3">
             <span className="text-lg">•</span>
-            <p className="text-[13px] leading-relaxed text-sage-700">{p}</p>
+            <p className="text-[13px] leading-relaxed text-sage-700">{t(p)}</p>
           </Card>
         ))}
       </div>

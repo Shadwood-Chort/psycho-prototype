@@ -1,12 +1,14 @@
 import { TopBar } from "../../components/ui/TopBar";
 import { Chip } from "../../components/ui/Chip";
 import { useApp } from "../../context/AppContext";
+import { useT } from "../../i18n/useT";
 
 const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const TIME_OPTIONS = ["09:00", "11:00", "13:00", "15:00", "17:00", "19:00"];
 
 export function ScheduleSettings() {
   const { psychReg, updatePsychReg } = useApp();
+  const t = useT();
 
   const toggleWeekday = (day: string) => {
     updatePsychReg({
@@ -28,11 +30,12 @@ export function ScheduleSettings() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title="Настройка расписания" />
+      <TopBar title={t("Настройка расписания")} />
       <div className="flex-1 space-y-3 px-5 pb-6">
         <p className="text-[13px] text-sage-600">
-          Отметьте дни недели и удобное время для консультаций. Изменения сразу отразятся в
-          календаре.
+          {t(
+            "Отметьте дни недели и удобное время для консультаций. Изменения сразу отразятся в календаре.",
+          )}
         </p>
         {WEEKDAYS.map((day) => {
           const active = day in psychReg.weeklySlots;

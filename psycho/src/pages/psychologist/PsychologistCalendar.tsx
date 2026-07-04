@@ -5,13 +5,16 @@ import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
 import { TopBar } from "../../components/ui/TopBar";
 import { useApp, MY_PSYCHOLOGIST_ID } from "../../context/AppContext";
+import { useT } from "../../i18n/useT";
+import { appointmentsOnLabel } from "../../i18n/translations";
 import { formatDateHuman } from "../../utils/format";
 
 const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
 export function PsychologistCalendar() {
-  const { psychReg, appointments } = useApp();
+  const { psychReg, appointments, language } = useApp();
   const navigate = useNavigate();
+  const t = useT();
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
@@ -57,7 +60,7 @@ export function PsychologistCalendar() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title="Календарь" />
+      <TopBar title={t("Календарь")} />
 
       <div className="flex-1 px-5 pb-4">
         <Card className="mb-4">
@@ -73,18 +76,18 @@ export function PsychologistCalendar() {
         </Card>
 
         <div className="mb-4 flex items-center justify-center gap-4 text-[11px] text-sage-600">
-          <Legend color="bg-sage-500" label="Свободно" />
-          <Legend color="bg-peach-dark" label="Частично занято" />
-          <Legend color="bg-coral" label="Занято" />
+          <Legend color="bg-sage-500" label={t("Свободно")} />
+          <Legend color="bg-peach-dark" label={t("Частично занято")} />
+          <Legend color="bg-coral" label={t("Занято")} />
         </div>
 
         {selectedDate && (
           <div className="mb-4">
             <h2 className="mb-2 text-[13px] font-medium text-sage-700">
-              Записи на {formatDateHuman(selectedDate)}
+              {appointmentsOnLabel(language, formatDateHuman(selectedDate))}
             </h2>
             {selectedAppointments.length === 0 ? (
-              <p className="text-[13px] text-sage-500">Нет записей на эту дату.</p>
+              <p className="text-[13px] text-sage-500">{t("Нет записей на эту дату.")}</p>
             ) : (
               <div className="space-y-2">
                 {selectedAppointments.map((a) => (
@@ -104,7 +107,7 @@ export function PsychologistCalendar() {
 
       <div className="px-5 pb-6 pt-2">
         <Button variant="secondary" onClick={() => navigate("/psychologist/schedule")}>
-          Настроить расписание
+          {t("Настроить расписание")}
         </Button>
       </div>
     </div>

@@ -3,13 +3,8 @@ import { Avatar } from "../../components/ui/Avatar";
 import { Card } from "../../components/ui/Card";
 import { TopBar } from "../../components/ui/TopBar";
 import { useApp, MY_PSYCHOLOGIST_ID } from "../../context/AppContext";
+import { useT } from "../../i18n/useT";
 import { formatDateHuman } from "../../utils/format";
-
-const STATUS_LABEL: Record<string, string> = {
-  upcoming: "Предстоит",
-  completed: "Завершена",
-  cancelled: "Отменена",
-};
 
 function initialsOf(name: string) {
   return name
@@ -23,6 +18,13 @@ function initialsOf(name: string) {
 export function PsychologistAppointments() {
   const { appointments } = useApp();
   const navigate = useNavigate();
+  const t = useT();
+
+  const STATUS_LABEL: Record<string, string> = {
+    upcoming: t("Предстоит"),
+    completed: t("Завершена"),
+    cancelled: t("Отменена"),
+  };
 
   const mine = appointments
     .filter((a) => a.psychologistId === MY_PSYCHOLOGIST_ID)
@@ -30,11 +32,11 @@ export function PsychologistAppointments() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title="Мои записи" />
+      <TopBar title={t("Мои записи")} />
       <div className="flex-1 space-y-3 px-5 pb-6">
         {mine.length === 0 && (
           <p className="pt-10 text-center text-[14px] text-sage-500">
-            Пока нет записей клиентов.
+            {t("Пока нет записей клиентов.")}
           </p>
         )}
         {mine.map((a) => (
@@ -48,7 +50,7 @@ export function PsychologistAppointments() {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[14px] font-semibold text-sage-900">{a.clientName}</p>
                 <p className="text-[12px] text-sage-500">
-                  {formatDateHuman(a.date)} в {a.time} · {a.format === "online" ? "Онлайн" : "Офлайн"}
+                  {formatDateHuman(a.date)} в {a.time} · {a.format === "online" ? t("Онлайн") : t("Офлайн")}
                 </p>
               </div>
               <span
