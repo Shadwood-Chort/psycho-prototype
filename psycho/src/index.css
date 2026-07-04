@@ -1,2 +1,55 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+
+  --color-sage-50: #f2f6f1;
+  --color-sage-100: #e3ebe0;
+  --color-sage-200: #c9d9c4;
+  --color-sage-300: #aec7a7;
+  --color-sage-400: #9bb894;
+  --color-sage-500: #8fa98f;
+  --color-sage-600: #728c72;
+  --color-sage-700: #5a6f5a;
+  --color-sage-800: #455645;
+  --color-sage-900: #333f33;
+
+  --color-cream: #f7f5f0;
+  --color-cream-dark: #efeae0;
+
+  --color-peach: #f3d9c4;
+  --color-peach-light: #f9ebdf;
+  --color-peach-dark: #e8bd9a;
+
+  --color-coral: #e2725b;
+  --color-coral-dark: #c85a44;
+  --color-coral-light: #fbe4de;
+
+  --shadow-soft: 0 2px 12px rgba(80, 90, 70, 0.08);
+  --shadow-soft-lg: 0 8px 24px rgba(80, 90, 70, 0.12);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--color-sage-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* hide scrollbars inside phone frame content but keep scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+input[type="range"] {
+  accent-color: var(--color-sage-500);
+}
